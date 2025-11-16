@@ -31,3 +31,4 @@ console.log("O perimetro é: "+ ret1.perimetro());
 
 let tmp = ret1.toString();
 console.log(tmp);
+

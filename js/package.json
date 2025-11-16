@@ -13,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "bycontract": "^2.0.11",
+    "luxon": "^3.7.2",
     "prompt-sync": "^4.2.0"
   }
 }
