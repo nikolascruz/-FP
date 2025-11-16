@@ -55,6 +55,36 @@ class ContaLimite extends ContaComum {
   }
 }
 
+function bonus(contas, bonu) {
+
+  
+  for(let conta of contas){
+    console.log(conta.toString());
+    conta.deposito(bonu);
+    console.log(conta.toString());
+  }
+  
+}
+
+function juros(contas, juro) {
+
+  
+  for(let conta of contas){
+    if(conta instanceof ContaPoupanca)
+      console.log(conta.toString());
+      conta.retirada(juro);
+      console.log(conta.toString());
+  }
+  
+}
+
+let contas = [];
+
+// Criando contas para array
+contas.push( new ContaComum(101, 500));
+contas.push( new ContaPoupanca(102, 1000));
+contas.push( new ContaLimite(103, 200));
+
 
 // Criando contas
 const comum = new ContaComum(101, 500);
@@ -74,3 +104,6 @@ limite.retirada(250); // pode ficar negativo até 50%
 console.log(comum.toString());
 console.log(poupanca.toString());
 console.log(limite.toString());
+
+bonus(contas,250)
+juros(contas,250)
