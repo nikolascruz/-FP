@@ -14,6 +14,7 @@
   "dependencies": {
     "bycontract": "^2.0.11",
     "luxon": "^3.7.2",
+    "n-readlines": "^1.0.1",
     "prompt-sync": "^4.2.0"
   }
 }
