@@ -23,23 +23,20 @@ export class Item {
   }
 }
 
-
 // Item coletável adicionado ao inventário 
 export class ItemColetavel extends Item {
   constructor(opts = {}) {
     super({ ...opts, coletavel: true });
-    // propriedades adicionais para itens coletáveis
+    // propriedades a mais para itens coletáveis
   }
 
   coletar() {
-    // retorno padrão; o Jogo/Jogador decide o que fazer com o objeto
+    // retorno padrão:jogador decide oque fazer com o objeto
     return { sucesso: true, mensagem: `${this.nome} coletado.` };
   }
 }
 
-/**
- * Container: objeto que guarda outros itens e pode ser bloqueado por senha.
- */
+// Container: objeto que vai guarda os outros itens e pode ser bloqueado por senha
 export class Container extends Item {
   constructor({ conteudo = [], bloqueado = false, senha = null, ...rest } = {}) {
     super({ ...rest, examinavel: true });
@@ -63,16 +60,14 @@ export class Container extends Item {
     if (this.senha && codigo === this.senha) {
       this.bloqueado = false;
       const itens = this.conteudo.slice();
-      this.conteudo = []; // conteúdo removido
+      this.conteudo = []; // basicamente conteúdo removido
       return { sucesso: true, mensagem: 'Senha correta. Container aberto.', itens };
     }
     return { sucesso: false, mensagem: 'Senha incorreta.' };
   }
 }
 
-/**
- * Documento simples — ao examinar retorna o texto (ex.: instruções).
- */
+// Documento simples que retorna um texto ao examinar
 export class Documento extends Item {
   constructor({ texto = '', ...rest } = {}) {
     super({ ...rest, examinavel: true, coletavel: false });
@@ -84,10 +79,7 @@ export class Documento extends Item {
   }
 }
 
-/**
- * Terminal — pode estar bloqueado e conter instruções.
- * Ex.: desbloquear com instruções encontradas no Documento.
- */
+//Terminal pode ou não estar bloqueado e conter infos
 export class Terminal extends Item {
   constructor({ bloqueado = true, instrucoes = '', ...rest } = {}) {
     super({ ...rest, examinavel: true, coletavel: false });
@@ -101,7 +93,7 @@ export class Terminal extends Item {
   }
 
   desbloquear(chaveTexto) {
-    // comportamento simples: chaveTexto deve conter a instrução ou token
+    // chaveTexto deve conter a instrução ou token
     if (!this.bloqueado) return { sucesso: true, mensagem: 'Terminal já está desbloqueado.' };
     if (!chaveTexto) return { sucesso: false, mensagem: 'Nada fornecido para desbloquear.' };
     const ok = this.instrucoes && chaveTexto.includes(this.instrucoes);
@@ -113,18 +105,16 @@ export class Terminal extends Item {
   }
 
   montarDispositivo(componentesIds = []) {
-    // validação simples: deixa a cargo do Jogo/Dispositivo
+    // validação simples
     return { sucesso: true, mensagem: 'Montagem solicitada.', componentes: componentesIds };
   }
 }
 
-/**
- * Dispositivo resultante da montagem (Desativador Neural).
- */
+// Desativador Neural
 export class Dispositivo extends Item {
   constructor({ componentes = [], montado = false, ...rest } = {}) {
     super({ ...rest, coletavel: true });
-    this.componentes = componentes; // array de ids ou referências
+    this.componentes = componentes; // array de ids/referências
     this.montado = Boolean(montado);
   }
 
@@ -142,18 +132,17 @@ export class Dispositivo extends Item {
   usar(megaCerebro) {
     if (!this.montado) return { sucesso: false, mensagem: 'Dispositivo não está montado.' };
     if (!megaCerebro) return { sucesso: false, mensagem: 'Alvo inválido.' };
-    // efeito será tratado pelo objeto alvo
+    // efeito será tratado pelo obj alvo
     return { sucesso: true, mensagem: 'Dispositivo ativado.' };
   }
 }
 
-/**
- * RoboAuxiliar — objeto que pode fornecer um módulo quando inspecionado.
- */
+
+//obj que vai fornecer um módulo quando inspecionar
 export class RoboAuxiliar extends Item {
   constructor({ modulo = null, status = 'danificado', ...rest } = {}) {
     super({ ...rest, examinavel: true, coletavel: false });
-    this.modulo = modulo; // ItemColetavel ou null
+    this.modulo = modulo; // ItemColetavel/null
     this.status = status;
     this.peçaRetirada = false;
   }
