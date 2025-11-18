@@ -4,7 +4,7 @@
 //Classe base Item
 //Representa qualquer objeto que existi na sala
 export class Item {
-  constructor({ id, nome, descricao = '', coletavel = false, examinavel = true }) {
+  constructor({ id, nome, descricao = '', coletavel = false, examinavel = true } = {}) {
     if (!id) throw new Error('Item precisa de um id único');
     this.id = id;
     this.nome = nome || id;
@@ -17,7 +17,7 @@ export class Item {
     return `${this.nome}: ${this.descricao}`;
   }
 
-   //Usar o item contra um alvo ****subclasses podem sobrescrever
+  //Usar o item contra um alvo ****subclasses podem sobrescrever
   usar(target) {
     return { sucesso: false, mensagem: `Nada acontece ao usar ${this.nome}.` };
   }
@@ -27,50 +27,46 @@ export class Item {
 export class ItemColetavel extends Item {
   constructor(opts = {}) {
     super({ ...opts, coletavel: true });
-    // propriedades a mais para itens coletáveis
+    // propriedades adicionais para itens coletáveis
   }
 
+  // retorno padrão o Jogo/Jogador decide o que fazer com o objeto
   coletar() {
-    // retorno padrão:jogador decide oque fazer com o objeto
     return { sucesso: true, mensagem: `${this.nome} coletado.` };
   }
 }
 
-// Container: objeto que vai guarda os outros itens e pode ser bloqueado por senha
+// Container: objeto que guarda outros itens e pode ser bloqueado por senha
 export class Container extends Item {
   constructor({ conteudo = [], bloqueado = false, senha = null, ...rest } = {}) {
     super({ ...rest, examinavel: true });
     this.conteudo = Array.isArray(conteudo) ? conteudo : [];
     this.bloqueado = Boolean(bloqueado);
-    this.senha = senha; // string ou null
+    this.senha = senha;
   }
 
   examinar() {
-    if (this.bloqueado) {
-      return `${this.nome}: Está trancado.`;
-    }
+    if (this.bloqueado) return `${this.nome}: Está trancado.`;
     const lista = this.conteudo.map((i) => i.nome || i.id).join(', ') || 'vazio';
     return `${this.nome}: contém ${lista}.`;
   }
 
   abrir(codigo) {
-    if (!this.bloqueado) {
-      return { sucesso: true, mensagem: 'Container já estava aberto.', itens: this.conteudo };
-    }
+    if (!this.bloqueado) return { sucesso: true, mensagem: 'Container já estava aberto.', itens: this.conteudo };
     if (this.senha && codigo === this.senha) {
       this.bloqueado = false;
       const itens = this.conteudo.slice();
-      this.conteudo = []; // basicamente conteúdo removido
+      this.conteudo = [];// conteúdo removido
       return { sucesso: true, mensagem: 'Senha correta. Container aberto.', itens };
     }
     return { sucesso: false, mensagem: 'Senha incorreta.' };
   }
 }
 
-// Documento simples que retorna um texto ao examinar
+// Documento simples retorna text (util pra bilhetes e instruções)
 export class Documento extends Item {
-  constructor({ texto = '', ...rest } = {}) {
-    super({ ...rest, examinavel: true, coletavel: false });
+  constructor({ texto = '', coletavel = true, ...rest } = {}) {
+    super({ ...rest, examinavel: true, coletavel: Boolean(coletavel) });
     this.texto = texto;
   }
 
@@ -79,7 +75,7 @@ export class Documento extends Item {
   }
 }
 
-//Terminal pode ou não estar bloqueado e conter infos
+//Terminal pode estar bloqueado e conter instruções
 export class Terminal extends Item {
   constructor({ bloqueado = true, instrucoes = '', ...rest } = {}) {
     super({ ...rest, examinavel: true, coletavel: false });
@@ -93,7 +89,7 @@ export class Terminal extends Item {
   }
 
   desbloquear(chaveTexto) {
-    // chaveTexto deve conter a instrução ou token
+    // comportamento simples: chaveTexto deve conter a instrução ou token
     if (!this.bloqueado) return { sucesso: true, mensagem: 'Terminal já está desbloqueado.' };
     if (!chaveTexto) return { sucesso: false, mensagem: 'Nada fornecido para desbloquear.' };
     const ok = this.instrucoes && chaveTexto.includes(this.instrucoes);
@@ -105,21 +101,20 @@ export class Terminal extends Item {
   }
 
   montarDispositivo(componentesIds = []) {
-    // validação simples
+    // validação simples: deixa a cargo do Jogo/Dispositivo
     return { sucesso: true, mensagem: 'Montagem solicitada.', componentes: componentesIds };
   }
 }
 
-// Desativador Neural
+// Dispositivo resultante da montagem (Desativador Neural)
 export class Dispositivo extends Item {
   constructor({ componentes = [], montado = false, ...rest } = {}) {
     super({ ...rest, coletavel: true });
-    this.componentes = componentes; // array de ids/referências
+    this.componentes = componentes;// array de ids ou referências
     this.montado = Boolean(montado);
   }
 
   montar(listaItens = []) {
-    // considera que a lista de ids/itens correta já foi validada externamente
     if (this.montado) return { sucesso: false, mensagem: 'Dispositivo já montado.' };
     if (!Array.isArray(listaItens) || listaItens.length === 0) {
       return { sucesso: false, mensagem: 'Componentes insuficientes.' };
@@ -132,17 +127,15 @@ export class Dispositivo extends Item {
   usar(megaCerebro) {
     if (!this.montado) return { sucesso: false, mensagem: 'Dispositivo não está montado.' };
     if (!megaCerebro) return { sucesso: false, mensagem: 'Alvo inválido.' };
-    // efeito será tratado pelo obj alvo
     return { sucesso: true, mensagem: 'Dispositivo ativado.' };
   }
 }
 
-
-//obj que vai fornecer um módulo quando inspecionar
+//RoboAuxiliar: objeto que pode fornecer um módulo quando inspecionado
 export class RoboAuxiliar extends Item {
   constructor({ modulo = null, status = 'danificado', ...rest } = {}) {
     super({ ...rest, examinavel: true, coletavel: false });
-    this.modulo = modulo; // ItemColetavel/null
+    this.modulo = modulo; // ItemColetavel ou null
     this.status = status;
     this.peçaRetirada = false;
   }
