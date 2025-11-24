@@ -263,14 +263,4 @@ Pronto! Na Fase 2 você poderá usar o Desativador Neural para concluir o final 
 # 🎉 4. Parabéns!
 
 Você terminou a Fase 1 do Adventure PUCRS!
-Agora seu jogo já está pronto para envio conforme as regras da disciplina.
 
-Se quiser evoluir a Fase 2 depois, basta adicionar:
-
-* mais salas
-* mais itens
-* finais diferentes
-* lógica da porta de saída
-* interações com o Mega Cérebro
-
-Boa entrega e bom semestre! 🚀🧠💡
