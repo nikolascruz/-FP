@@ -1,18 +1,17 @@
-// jogo.js
-// arquivo que vai integra Sala, Jogador e Items e processa comandos básicos
+// jogo.js - Fase 2
+// Versão atualizada: adiciona lógica para usar o Desativador-neural no MegaCerebro
 
 import { Sala } from './sala.js';
 import { Jogador } from './jogador.js';
-import { Item, ItemColetavel, Container, Documento, Terminal, Dispositivo, RoboAuxiliar } from './item.js';
+import { Item, ItemColetavel, Container, Documento, Terminal, Dispositivo, RoboAuxiliar, MegaCerebro } from './item.js';
 
 export class Jogo {
   constructor() {
     this.salas = new Map();
-    this.jogador = new Jogador({ nome: 'Aluno PUCRS de ADS' });
+    this.jogador = new Jogador({ nome: 'Aluno PUCRS' });
     this.salaAtual = null;
     this.rodando = false;
 
-    // Lista para os comandos e handlers "mapeamento"
     this.handlers = {
       olhar: this.handlerOlhar.bind(this),
       examinar: this.handlerExaminar.bind(this),
@@ -30,54 +29,50 @@ export class Jogo {
       sair: this.handlerSair.bind(this),
     };
 
-    // lista com os componentes necessários para o desativador
+    // ids necessários para montagem
     this.componentesNecessarios = ['peca-mecanica', 'modulo-logico'];
+
+    // flag para indicar se o Nexus (MegaCerebro) está desativado
+    this.nexusDesativado = false;
   }
 
   iniciar() {
-    // iniciando/criaando salas
     const prot = new Sala({ id: 'prot', nome: 'Laboratório de Protótipos', descricao: 'Bancadas e projetos inacabados.' });
     const almox = new Sala({ id: 'almox', nome: 'Almoxarifado Técnico', descricao: 'Prateleiras com caixas e malas trancadas.' });
     const ele = new Sala({ id: 'ele', nome: 'Laboratório de Eletrônica', descricao: 'Protoboards e circuitos por toda parte.' });
     const ctrl = new Sala({ id: 'ctrl', nome: 'Sala de Controle', descricao: 'Terminais e o Mega Cérebro do NEXUS-9.' });
 
-    // conectando "linha única: sul"
     prot.conectar('sul', almox);
     almox.conectar('sul', ele);
     ele.conectar('sul', ctrl);
 
-    // criando itens
+    // itens (mesmos da fase 1, com adaptações no ID do dispositivo)
     const bilhete = new Documento({ id: 'bilhete-senha', nome: 'Bilhete com senha', texto: 'Senha: 0420' });
     const ferramenta = new Item({ id: 'ferramenta', nome: 'Chave de fenda', descricao: 'Uma ferramenta simples, útil para pequenos reparos.' });
     const caixaTrancada = new Item({ id: 'caixa-trancada', nome: 'Caixa trancada', descricao: 'Uma caixa com fecho reforçado. Parece vazia por fora.' });
 
-    // mala com peça mecânica "container"
     const pecaMecanica = new ItemColetavel({ id: 'peca-mecanica', nome: 'Peça Mecânica', descricao: 'Parte mecânica essencial para montar o Desativador Neural.' });
     const mala = new Container({ id: 'mala-pecas', nome: 'Mala com Peças', descricao: 'Mala trancada. Precisa de senha.', conteudo: [pecaMecanica], bloqueado: true, senha: '0420' });
 
-    // documento do professor com instruções para desbloquear
     const docProf = new Documento({ id: 'doc-prof', nome: 'Documento do Professor', texto: 'Instruções de acesso: NEXUS-UNLOCK. Use esse token no terminal de controle.' });
-
-    // lousa com dica dos componentes
     const lousa = new Documento({ id: 'lousa', nome: 'Lousa', texto: 'Componentes para o Desativador Neural: peca-mecanica, modulo-logico' });
 
-    // robo auxiliar com peça modulo
     const modulo = new ItemColetavel({ id: 'modulo-logico', nome: 'Módulo Lógico', descricao: 'Módulo lógico retirável do robô auxiliar.' });
     const robo = new RoboAuxiliar({ id: 'robo-aux', nome: 'Robô Auxiliar Danificado', descricao: 'Um robô auxiliar com partes expostas.', modulo });
 
-    // protoboards e bancadas apenas examináveis ainda
     const bancadaEle = new Item({ id: 'bancada-ele', nome: 'Bancada de eletrônica', descricao: 'Protoboards e ferramentas.' });
     const protoboard = new Item({ id: 'protoboard', nome: 'Protoboard', descricao: 'Placas para testes.' });
     const bancadaTeste = new Item({ id: 'bancada-teste', nome: 'Bancada de teste', descricao: 'Ferramentas e instruções.' });
     const bancadaMec = new Item({ id: 'bancada-mec', nome: 'Bancada de mecânica', descricao: 'Ferramentas pesadas e peças.' });
 
-    // terminal no controle do nexus-9
     const terminal = new Terminal({ id: 'terminal-controle', nome: 'Terminal de Controle', descricao: 'Terminal central; precisa de token para desbloquear.', bloqueado: true, instrucoes: 'NEXUS-UNLOCK' });
-    const mega = new Item({ id: 'mega-cerebro', nome: 'Mega Cérebro NEXUS-9', descricao: 'Supercomputador central. Aqui será conectado o desativador.' });
+
+    // novo: MegaCerebro
+    const mega = new MegaCerebro({ id: 'mega-cerebro', nome: 'Mega Cérebro NEXUS-9', descricao: 'Supercomputador central. Aqui será conectado o desativador.' });
+
     const tela = new Item({ id: 'tela-nexus', nome: 'Tela do NEXUS-9', descricao: 'Mensagens enigmáticas aparecem aqui.' });
     const portaSaida = new Item({ id: 'porta-saida', nome: 'Porta de Saída', descricao: 'Porta trancada. Só abrirá após desativação.' });
 
-    // registrando itens nas salas
     prot.adicionarItem(bilhete);
     prot.adicionarItem(ferramenta);
     prot.adicionarItem(caixaTrancada);
@@ -97,20 +92,17 @@ export class Jogo {
     ctrl.adicionarItem(tela);
     ctrl.adicionarItem(portaSaida);
 
-    // salvando salas
     this.salas.set(prot.id, prot);
     this.salas.set(almox.id, almox);
     this.salas.set(ele.id, ele);
     this.salas.set(ctrl.id, ctrl);
 
-    // definindo sala atual
     this.salaAtual = prot;
     this.rodando = true;
 
     return `Jogo iniciado. Você está em ${this.salaAtual.nome}. Digite 'ajuda' para comandos.`;
   }
 
-    //Parse e dispatch de comandos básicos vão retornar uma string de resposta
   async processar(input = '') {
     if (!input || typeof input !== 'string') return 'Comando inválido.';
     const parts = input.trim().split(/\s+/);
@@ -127,9 +119,8 @@ export class Jogo {
     }
   }
 
-  // uso dos handlers 
   handlerAjuda() {
-    return `Comandos disponíveis:\n- olhar (ver sala)\n- examinar <id>\n- ir/mover <direcao>\n- pegar <itemId>\n- largar <itemId>\n- abrir <containerId> <codigo>\n- retirar <roboId> (extrai módulo)\n- usar <itemId> <alvoId> (ex: usar doc-prof terminal-controle)\n- montar (monta dispositivo no terminal desbloqueado)\n- inventario\n- ajuda/help\n- sair`;
+    return `Comandos disponíveis:\n- olhar (ver sala)\n- examinar <id>\n- ir/mover <direcao>\n- pegar <itemId>\n- largar <itemId>\n- abrir <containerId> <codigo>\n- retirar <roboId> (extrai módulo)\n- usar <itemId> <alvoId> (ex: usar doc-prof terminal-controle)\n- usar desativador-neural mega-cerebro\n- montar (monta dispositivo no terminal desbloqueado)\n- inventario\n- ajuda/help\n- sair`;
   }
 
   handlerOlhar() {
@@ -139,7 +130,6 @@ export class Jogo {
   handlerExaminar(args) {
     if (args.length === 0) return 'Use: examinar <itemId>'; 
     const id = args[0];
-    // procurando no inventário primeiro
     if (this.jogador.temItem(id)) return this.jogador.examinar(id);
     return this.salaAtual.examinar(id);
   }
@@ -149,7 +139,6 @@ export class Jogo {
     const dir = args[0];
     const destino = this.salaAtual.adj[dir];
     if (!destino) return `Não é possível ir para '${dir}' a partir daqui.`;
-    // ent se a adj contém referência a objeto Sala
     this.salaAtual = destino;
     return `Você vai para ${this.salaAtual.nome}.\n${this.salaAtual.examinarAmbiente()}`;
   }
@@ -160,11 +149,9 @@ export class Jogo {
     const item = this.salaAtual.obterItem(id);
     if (!item) return `Não existe '${id}' aqui.`;
 
-    // remove da sala antes
     const removido = this.salaAtual.removerItem(id);
     const resultado = this.jogador.pegar(removido);
     if (!resultado.sucesso) {
-      // coloca dnv na sala
       this.salaAtual.adicionarItem(removido);
       return resultado.mensagem;
     }
@@ -190,7 +177,6 @@ export class Jogo {
     const res = item.abrir(codigo);
     if (!res.sucesso) return res.mensagem;
 
-    // adiciona itens liberados na sala
     if (Array.isArray(res.itens)) {
       res.itens.forEach((it) => this.salaAtual.adicionarItem(it));
     }
@@ -206,61 +192,79 @@ export class Jogo {
 
     const res = item.retirarPeca();
     if (!res.sucesso) return res.mensagem;
-    // "res.item " pra adicionar a sala
     if (res.item) this.salaAtual.adicionarItem(res.item);
     return res.mensagem;
   }
 
   handlerUsar(args) {
-    if (args.length < 2) return 'Use: usar <itemId> <alvoId>';
-    const [itemId, alvoId] = args;
+    if (args.length < 1) return 'Use: usar <itemId> <alvoId>';
+    // suportar tanto: usar item alvo  OR usar desativador-neural mega-cerebro
+    const itemId = args[0];
+    const alvoId = args[1] || null;
 
-    // encontrando item no inventário ou sala
+    // localizar item (inventário primeiro)
     let item = this.jogador.inventario.find((i) => i.id === itemId) || this.salaAtual.obterItem(itemId);
     if (!item) return `Item '${itemId}' não encontrado nem no inventário nem na sala.`;
 
+    // caso especial: usar desativador-neural no mega-cerebro
+    if (item.id === 'desativador-neural' && alvoId === 'mega-cerebro') {
+      const mega = this.salaAtual.obterItem('mega-cerebro');
+      if (!mega) return 'Mega Cérebro não está acessível aqui.';
+      const res = mega.receberSinal(item);
+      if (res.sucesso) {
+        this.nexusDesativado = true;
+        return res.mensagem;
+      }
+      return res.mensagem;
+    }
+
+    // usar porta-saida sem alvo: 'usar porta-saida'
+    if (itemId === 'porta-saida') {
+      const porta = this.salaAtual.obterItem('porta-saida');
+      if (!porta) return 'Não há porta aqui.';
+      if (!this.nexusDesativado) return 'A porta não abre. O sistema de segurança ainda está ativo.';
+      // final do jogo
+      this.rodando = false;
+      return 'Você escapa da Poli enquanto os sistemas de emergência desligam. FIM DO JOGO.';
+    }
+
+    // caso geral: tentar usar item num alvo (fallback)
+    if (!alvoId) return 'Use: usar <itemId> <alvoId>';
     const alvo = this.salaAtual.obterItem(alvoId) || (this.jogador.temItem(alvoId) ? this.jogador.inventario.find(i=>i.id===alvoId) : null);
     if (!alvo) return `Alvo '${alvoId}' não encontrado nesta sala.`;
 
-    //Usando o documento/texto no terminal para desbloquea
+    // caso: usar documento (texto) no terminal
     if (alvo instanceof Terminal) {
       const texto = item.texto || item.descricao || '';
       const res = alvo.desbloquear(texto);
       return res.mensagem;
     }
 
-    // resultado genérico de consult
     const res = item.usar(alvo);
     return res && res.mensagem ? res.mensagem : 'Nada aconteceu.';
   }
 
   handlerMontar() {
-    // funciona na sala com terminal desbloqueado
     const terminal = this.salaAtual.obterItem('terminal-controle');
     if (!terminal) return 'Não há um terminal aqui para montar o dispositivo.';
     if (terminal.bloqueado) return 'O terminal ainda está bloqueado.';
 
-    // verifica se tem os componentes no inventário
     const temTodos = this.componentesNecessarios.every((cid) => this.jogador.temItem(cid));
     if (!temTodos) return 'Você ainda não possui todos os componentes necessários.';
 
-    // remove os componentes do inventário
     const componentes = [];
     this.componentesNecessarios.forEach((cid) => {
-      const res = this.jogador.largar(cid); // reutiliza largar para extrair item
+      const res = this.jogador.largar(cid);
       if (res.sucesso && res.item) {
         componentes.push(res.item);
       }
     });
 
-    // cria dispositivo "Desativador Neural"
-    const dispositivo = new Dispositivo({ id: 'desativador', nome: 'Desativador Neural', descricao: 'Dispositivo capaz de interromper os processos do NEXUS-9.' });
+    const dispositivo = new Dispositivo({ id: 'desativador-neural', nome: 'Desativador-neural', descricao: 'Dispositivo capaz de interromper os processos do NEXUS-9.' });
     dispositivo.montar(componentes.map(c => c.id));
 
-    // ADD o desativador ao inventário
     const pegou = this.jogador.pegar(dispositivo);
     if (!pegou.sucesso) {
-      // se falhar, coloca na sala
       this.salaAtual.adicionarItem(dispositivo);
       return 'Dispositivo montado, mas não foi possível carregá-lo no inventário.';
     }

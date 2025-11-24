@@ -1,8 +1,6 @@
-// item.js
-// Classes base para itens do jogo "Colapso na Poli" (Fase 1)
+// item.js - Fase 2
+// Versão atualizada com a classe MegaCerebro (POO clara)
 
-//Classe base Item
-//Representa qualquer objeto que existi na sala
 export class Item {
   constructor({ id, nome, descricao = '', coletavel = false, examinavel = true } = {}) {
     if (!id) throw new Error('Item precisa de um id único');
@@ -17,26 +15,21 @@ export class Item {
     return `${this.nome}: ${this.descricao}`;
   }
 
-  //Usar o item contra um alvo ****subclasses podem sobrescrever
   usar(target) {
     return { sucesso: false, mensagem: `Nada acontece ao usar ${this.nome}.` };
   }
 }
 
-// Item coletável adicionado ao inventário 
 export class ItemColetavel extends Item {
   constructor(opts = {}) {
     super({ ...opts, coletavel: true });
-    // propriedades adicionais para itens coletáveis
   }
 
-  // retorno padrão o Jogo/Jogador decide o que fazer com o objeto
   coletar() {
     return { sucesso: true, mensagem: `${this.nome} coletado.` };
   }
 }
 
-// Container: objeto que guarda outros itens e pode ser bloqueado por senha
 export class Container extends Item {
   constructor({ conteudo = [], bloqueado = false, senha = null, ...rest } = {}) {
     super({ ...rest, examinavel: true });
@@ -56,14 +49,14 @@ export class Container extends Item {
     if (this.senha && codigo === this.senha) {
       this.bloqueado = false;
       const itens = this.conteudo.slice();
-      this.conteudo = [];// conteúdo removido
+      this.conteudo = [];
       return { sucesso: true, mensagem: 'Senha correta. Container aberto.', itens };
     }
     return { sucesso: false, mensagem: 'Senha incorreta.' };
   }
 }
 
-// Documento simples retorna text (util pra bilhetes e instruções)
+// Documento permite ser coletável (útil para bilhetes e instruções)
 export class Documento extends Item {
   constructor({ texto = '', coletavel = true, ...rest } = {}) {
     super({ ...rest, examinavel: true, coletavel: Boolean(coletavel) });
@@ -75,7 +68,6 @@ export class Documento extends Item {
   }
 }
 
-//Terminal pode estar bloqueado e conter instruções
 export class Terminal extends Item {
   constructor({ bloqueado = true, instrucoes = '', ...rest } = {}) {
     super({ ...rest, examinavel: true, coletavel: false });
@@ -89,7 +81,6 @@ export class Terminal extends Item {
   }
 
   desbloquear(chaveTexto) {
-    // comportamento simples: chaveTexto deve conter a instrução ou token
     if (!this.bloqueado) return { sucesso: true, mensagem: 'Terminal já está desbloqueado.' };
     if (!chaveTexto) return { sucesso: false, mensagem: 'Nada fornecido para desbloquear.' };
     const ok = this.instrucoes && chaveTexto.includes(this.instrucoes);
@@ -101,16 +92,14 @@ export class Terminal extends Item {
   }
 
   montarDispositivo(componentesIds = []) {
-    // validação simples: deixa a cargo do Jogo/Dispositivo
     return { sucesso: true, mensagem: 'Montagem solicitada.', componentes: componentesIds };
   }
 }
 
-// Dispositivo resultante da montagem (Desativador Neural)
 export class Dispositivo extends Item {
   constructor({ componentes = [], montado = false, ...rest } = {}) {
     super({ ...rest, coletavel: true });
-    this.componentes = componentes;// array de ids ou referências
+    this.componentes = componentes;
     this.montado = Boolean(montado);
   }
 
@@ -131,11 +120,10 @@ export class Dispositivo extends Item {
   }
 }
 
-//RoboAuxiliar: objeto que pode fornecer um módulo quando inspecionado
 export class RoboAuxiliar extends Item {
   constructor({ modulo = null, status = 'danificado', ...rest } = {}) {
     super({ ...rest, examinavel: true, coletavel: false });
-    this.modulo = modulo; // ItemColetavel ou null
+    this.modulo = modulo;
     this.status = status;
     this.peçaRetirada = false;
   }
@@ -152,5 +140,33 @@ export class RoboAuxiliar extends Item {
     if (this.peçaRetirada) return { sucesso: false, mensagem: 'Módulo já foi retirado.' };
     this.peçaRetirada = true;
     return { sucesso: true, mensagem: 'Módulo extraído.', item: this.modulo };
+  }
+}
+
+// ----------------- Classe nova: MegaCerebro -----------------
+export class MegaCerebro extends Item {
+  constructor({ ativo = true, ...rest } = {}) {
+    super({ ...rest, examinavel: true, coletavel: false });
+    this.ativo = Boolean(ativo);
+  }
+
+  estaAtivo() {
+    return this.ativo;
+  }
+
+  desativar() {
+    if (!this.ativo) return { sucesso: false, mensagem: 'Mega Cérebro já está desativado.' };
+    this.ativo = false;
+    return { sucesso: true, mensagem: 'O Mega Cérebro NEXUS-9 solta faíscas e se desliga. Sistema comprometido.' };
+  }
+
+  receberSinal(item) {
+    if (!item) return { sucesso: false, mensagem: 'Nenhum sinal recebido.' };
+    const nomeId = item.id || item.nome || '';
+    // aceita 'desativador-neural' como id oficial
+    if (nomeId === 'desativador-neural' || nomeId === 'Desativador-neural') {
+      return this.desativar();
+    }
+    return { sucesso: false, mensagem: 'Esse item não tem efeito sobre o Mega Cérebro.' };
   }
 }

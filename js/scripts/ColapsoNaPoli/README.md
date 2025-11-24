@@ -1,266 +1,185 @@
-# 🕹️ Jogo de Adventure — Fase 1
+# 🧠 Adventure POO – NEXUS-9: O Enigma da Poli
 
-Bem-vindo ao **Adventure PUCRS: O Surto do NEXUS‑9!**
+Bem-vindo ao **Adventure POO**, um jogo estilo *text adventure* desenvolvido em **JavaScript**, utilizando **Programação Orientada a Objetos (POO)**.
 
-Este é um joguinho de texto feito para a disciplina de **Programação Orientada a Objetos (POO)**. Ele é simples, divertido e funciona direto no seu terminal. Aqui você vai explorar salas, pegar itens, abrir malas trancadas, desmontar robôs e montar um dispositivo especial!
-
-Este README explica:
-
-* Como **rodar o jogo**
-* Como **jogar** (comandos explicadinhos)
-* Um mini **tutorial passo a passo** de criança (para não se perder 😄)
+Este projeto foi criado para a disciplina de **Fundamentos Web – PUCRS**, contemplando **Fase 1** e **Fase 2** da entrega.
 
 ---
 
-# 📦 1. Como instalar e rodar o jogo
+# 📘 1. História do Jogo
 
-## ✔ Pré‑requisitos
+Você é um estudante preso no **Laboratório da Politécnica da PUCRS** após um surto inesperado de robôs autônomos.  
+O supercomputador **NEXUS-9** assumiu o controle das instalações, bloqueando todas as saídas.
 
-Você só precisa do **Node.js** instalado no seu computador.
+Seu objetivo:
 
-Para verificar:
+### **Construir um dispositivo especial chamado _Desativador Neural_ e usá-lo no Mega Cérebro NEXUS-9 para reaver o controle da Poli e escapar.**
 
-```
-node -v
-```
+Para isso, você deverá:
 
-Se aparecer um número (ex: v18.0.0), tudo certo!
+- Explorar laboratórios da faculdade  
+- Coletar peças mecânicas e módulos eletrônicos  
+- Decifrar bilhetes e documentos  
+- Desbloquear o terminal central  
+- Montar o dispositivo  
+- Finalmente usá-lo no NEXUS-9 e fugir pela porta de saída  
+
+Boa sorte!
 
 ---
 
-## ✔ Como rodar
+# 🧩 2. Estrutura do Jogo
 
-Dentro da pasta do projeto, abra o terminal e digite:
+O jogo utiliza 4 salas principais:
 
-```
+1. **Laboratório de Protótipos**  
+2. **Almoxarifado Técnico**  
+3. **Laboratório de Eletrônica**  
+4. **Sala de Controle**  
+
+Cada sala contém **objetos**, **ferramentas**, **documentos**, e em alguns casos, **máquinas interativas**.
+
+Todo o jogo funciona com **comandos de texto digitados pelo jogador**.
+
+---
+
+# 🕹️ 3. Como Rodar o Jogo
+
+### Pré-requisitos
+- Node.js instalado
+
+### Executar no terminal
+
+```bash
 node index.js
-```
+````
 
-Pronto! O jogo começa na mesma hora.
+Isso iniciará a aventura.
 
 ---
 
-# 🧭 2. Como jogar (comandos simples!)
+# 📚 4. Comandos do Jogo
 
-O jogo funciona com **comandos de texto**. Você escreve um comando, aperta ENTER e vê o que acontece.
+Você controla seu personagem digitando comandos como estes:
 
-Aqui estão todos os comandos:
-
-### 👀 Ver a sala
-
-```
-olhar
-```
-
-Mostra onde você está, o que tem na sala e para onde pode ir.
-
-### 🔍 Examinar algo
-
-```
-examinar <id>
-```
-
-Exemplo:
-
-```
-examinar bilhete-senha
-```
-
-### 👣 Ir para outra sala
-
-```
-ir <direcao>
-```
-
-Direções possíveis: **norte, sul, leste, oeste**.
-
-Exemplo:
-
-```
-ir sul
-```
-
-### ✋ Pegar itens
-
-```
-pegar <id>
-```
-
-### 🧺 Largar itens
-
-```
-largar <id>
-```
-
-### 🔓 Abrir malas na senha
-
-```
-abrir <containerId> <codigo>
-```
-
-Exemplo:
-
-```
-abrir mala-pecas 0420
-```
-
-### 🤖 Retirar peça de robô
-
-```
-retirar robo-aux
-```
-
-### 🔧 Usar um item em outro item
-
-```
-usar <itemId> <alvoId>
-```
-
-Exemplo:
-
-```
-usar doc-prof terminal-controle
-```
-
-### ⚙️ Montar o dispositivo especial
-
-```
-montar
-```
-
-(Precisa estar na Sala de Controle e ter as peças certas.)
-
-### 🎒 Ver o inventário
-
-```
-inventario
-```
-
-### ❓ Ver ajuda
+### 🟦 Comandos gerais
 
 ```
 ajuda
-```
-
-### 🚪 Sair do jogo
-
-```
-sair
-```
-
----
-
-# 🚸 3. Tutorial super simples (modo criança 😄)
-
-Aqui vai um passo a passo bem fácil para vencer a Fase 1.
-
-🌟 **Objetivo:** montar o **Desativador Neural**.
-
----
-
-## 🏁 **1. Começo: Laboratório de Protótipos**
-
-Digite:
-
-```
+inventario
 olhar
+examinar <item>
 ```
 
-Pegue o bilhete:
+### 🟪 Movimentação
 
 ```
-pegar bilhete-senha
+ir <direcao>
+mover sul
 ```
 
-Opcional: pegue a ferramenta:
+Direções válidas: **norte, sul, leste, oeste**
+
+### 🟩 Manipulando objetos
 
 ```
-pegar ferramenta
+pegar <itemId>
+largar <itemId>
+abrir <container> <senha>
+retirar <robo>
+usar <item> <alvo>
 ```
 
-Saia para o sul:
-
-```
-ir sul
-```
-
----
-
-## 🧰 **2. Almoxarifado Técnico**
-
-Pegue o documento importante:
-
-```
-pegar doc-prof
-```
-
-Abra a mala usando a senha do bilhete:
-
-```
-abrir mala-pecas 0420
-```
-
-Pegue a peça mecânica:
-
-```
-pegar peca-mecanica
-```
-
-Depois, vá para o sul:
-
-```
-ir sul
-```
-
----
-
-## 🤖 **3. Laboratório de Eletrônica**
-
-Retire o módulo lógico do robô:
-
-```
-retirar robo-aux
-```
-
-Pegue o módulo:
-
-```
-pegar modulo-logico
-```
-
-Siga para o sul:
-
-```
-ir sul
-```
-
----
-
-## 💻 **4. Sala de Controle**
-
-Use o documento para desbloquear o terminal:
-
-```
-usar doc-prof terminal-controle
-```
-
-Agora monte o dispositivo:
+### 🟧 Montagem (Fase 2)
 
 ```
 montar
 ```
 
-Veja seu inventário:
+### 🟥 Finalizar o jogo
 
 ```
-inventario
+usar porta-saida
 ```
-
-Pronto! Na Fase 2 você poderá usar o Desativador Neural para concluir o final do jogo!
 
 ---
 
-# 🎉 4. Parabéns!
+# 🧠 5. Objetivo Final
 
-Você terminou a Fase 1 do Adventure PUCRS!
+Para vencer o jogo, você precisa:
 
+1. Coletar as duas peças essenciais:
+
+   * `peca-mecanica`
+   * `modulo-logico`
+
+2. Desbloquear o **Terminal de Controle** usando o documento encontrado no Almoxarifado.
+
+3. Montar o **Desativador-neural**.
+
+4. Usá-lo no **Mega Cérebro NEXUS-9**:
+
+```
+usar desativador-neural mega-cerebro
+```
+
+5. Então escapar:
+
+```
+usar porta-saida
+```
+
+---
+
+# 📝 6. Roteiro rápido para terminar o jogo
+
+Se quiser testar rapidamente:
+
+```
+olhar
+ir sul
+abrir mala-pecas 0420
+pegar peca-mecanica
+pegar doc-prof
+ir sul
+retirar robo-aux
+pegar modulo-logico
+ir sul
+usar doc-prof terminal-controle
+montar
+usar desativador-neural mega-cerebro
+usar porta-saida
+```
+
+---
+
+# 🛠️ 7. Estrutura do Código (Arquitetura)
+
+O jogo usa Programação Orientada a Objetos com as seguintes classes:
+
+* `Item`
+* `ItemColetavel`
+* `Documento`
+* `Container`
+* `Terminal`
+* `RoboAuxiliar`
+* `Dispositivo`
+* `MegaCerebro`
+* `Sala`
+* `Jogador`
+* `Jogo`
+
+Cada classe foi projetada para cumprir um papel claro dentro da aventura.
+
+---
+
+# 🎉 8. Créditos
+
+Projeto desenvolvido para a disciplina de **Fundamentos Web – PUCRS**, utilizando JavaScript e conceitos de Programação Orientada a Objetos.
+
+---
+
+# 🚀 9. Boa Sorte!
+
+Explore as salas, leia as pistas, combine itens e resolva o enigma para escapar da Poli.
+Divirta-se — e cuidado com o NEXUS-9!
