@@ -1,7 +1,7 @@
-/* Paleta AuQmia (Meio Natural), Verde folha, Verde claro, Marrom claro, Creme*/
+/* Paleta AuQmia */
 :root {
-    --primary-color: #4CAF50; 
-    --secondary-color: #FF9800; 
+    --auqmia-verde: #4CAF50;
+    --auqmia-laranja: #FF9800;
     --background-light: #f9fdfa; 
     --text-color: #333;
     --white: #fff;
@@ -88,6 +88,12 @@ h2 {
     border-bottom: 2px solid #ddd;
     display: inline-block;
     padding-bottom: 5px;
+}
+
+p {
+  margin-bottom: 12px;
+  font-size: 1.05rem;
+  color: #444;
 }
 
 /* Banner */
@@ -192,4 +198,21 @@ footer p {
 footer a {
     color: var(--secondary-color);
     text-decoration: none;
+}
+
+/* Ajuste do arrossel para não ficar gigante */
+.carousel-item img {
+    max-height: 450px;
+    object-fit: cover;
+}
+
+/* comando para forçar a ser a cor certa*/
+.bg-success {
+    background-color: var(--auqmia-verde) !important;
+}
+
+/* Estilo do Form */
+.card {
+    border: none;
+    border-top: 5px solid var(--auqmia-laranja);
 }
