@@ -7,9 +7,10 @@
   --text: #333;
   --radius: 14px;
   --font: "Poppins", sans-serif;
+  --max-width: 1100px;
 }
 
-/* posição */
+/* Geral */
 * {
   margin: 0;
   padding: 0;
@@ -20,11 +21,25 @@ body {
   font-family: var(--font);
   background: var(--cream);
   color: var(--text);
-  line-height: 1.5;
-  padding-top: 80px; /* espaço por causa do menu fixo */
+  line-height: 1.6;
+  padding-top: 90px; /* menu fixo */
 }
 
-/* Cabeçario */
+/* Centraliza o conteúdo em todas as páginas */
+.container {
+  max-width: var(--max-width);
+  margin: auto;
+  padding: 0 20px;
+}
+
+/* Tipografia de parágrafos */
+p {
+  margin-bottom: 12px;
+  font-size: 1.05rem;
+  color: #444;
+}
+
+/* Cabeçario -------------------------------------- */
 header {
   text-align: center;
   padding: 20px;
@@ -33,7 +48,7 @@ header {
   border-radius: 0 0 var(--radius) var(--radius);
 }
 
-/* Menu principal*/
+/* Nave fixo */
 nav {
   position: fixed;
   top: 0;
@@ -59,18 +74,19 @@ nav a:hover {
   transform: scale(1.05);
 }
 
-/* Titulos*/
+/* TITULOS */
 h1, h2, h3 {
   margin-bottom: 12px;
   color: var(--brown);
+  text-align: left;
 }
 
-/* secção*/
+/* Secção */
 section, div {
-  padding: 20px;
+  padding: 20px 0;
 }
 
-/* Todos os card de prod */
+/* Cards dos produtos*/
 .card-container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -91,42 +107,42 @@ section, div {
   box-shadow: 0 4px 12px rgba(0,0,0,0.16);
 }
 
-/* todas as IMF */
-.card img,
-figure img {
+.card img {
   width: 100%;
   border-radius: var(--radius);
 }
 
-/* Todos os card de Serviço */
+/* Lista de serviços */
 ol li {
   background: white;
   padding: 16px;
   border-radius: var(--radius);
   margin-bottom: 16px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  transition: .3s;
 }
 
 ol li:hover {
   background: var(--green-light);
 }
 
-/* Todos os forms*/
+/* Forms */
 form {
   background: white;
   padding: 20px;
   border-radius: var(--radius);
   max-width: 600px;
-  margin: auto;
+  margin: 20px auto;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 input, select {
   width: 100%;
   padding: 10px;
-  margin: 8px 0;
+  margin: 8px 0 16px;
   border-radius: var(--radius);
   border: 1px solid #ccc;
+  font-size: 1rem;
 }
 
 input:focus, select:focus {
@@ -134,7 +150,7 @@ input:focus, select:focus {
   outline: none;
 }
 
-/* Todos os Botões*/
+/* Botôes*/
 button {
   background: var(--green);
   color: white;
@@ -143,7 +159,6 @@ button {
   border-radius: var(--radius);
   font-weight: bold;
   cursor: pointer;
-  margin-top: 10px;
   transition: .3s;
 }
 
@@ -151,7 +166,7 @@ button:hover {
   background: var(--brown);
 }
 
-/* info de contato e etc */
+/* Roda pé */
 footer {
   text-align: center;
   padding: 20px;
