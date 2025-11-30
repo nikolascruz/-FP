@@ -1,12 +1,12 @@
-// --- 1. FUNÇÃO TEMPORAL (Requisito: Tornar dinâmico) ---
+// Função de saudação versão final (função temporal,)
 function carregarSaudacao() {
     const elementoSaudacao = document.getElementById("saudacao");
     
-    // Se o elemento não existir na página (ex: paginas internas), para a função
+    // Se o elemento não existir na página (ex paginas internas), dai para a função
     if (!elementoSaudacao) return;
 
     const dataAgora = new Date();
-    const hora = dataAgora.getHours(); // Pega a hora (0 a 23)
+    const hora = dataAgora.getHours(); // Pega a hr (0 a 23)
     let texto = "";
 
     if (hora >= 6 && hora < 12) {
@@ -20,29 +20,29 @@ function carregarSaudacao() {
     elementoSaudacao.innerText = texto;
 }
 
-// Executa a saudação assim que a página carrega
+// faz a saudação assim que a página carrega
 window.onload = carregarSaudacao;
 
 
-// --- 2. LÓGICA DO FORMULÁRIO (Requisito: Validar/Interagir) ---
+//Forms
 function confirmarAgendamento(event) {
-    // Evita que a página recarregue de verdade (comportamento padrão do form)
-    event.preventDefault();
+    
+    event.preventDefault();// func para a página não recarregar de verdade (comportamento padrão do form)
 
-    // Captura alguns dados para mostrar no alerta
+    // Captura dos dados pra mostrar no alert
     const nomeTutor = document.getElementById("nome").value;
     const nomePet = document.getElementById("nomePet").value;
     const servico = document.getElementById("servico").value;
     const data = document.getElementById("dataAgendamento").value;
     const hora = document.getElementById("horaAgendamento").value;
 
-    // Verifica qual transporte foi selecionado
+    // transporte selecionado
     let transporte = "Entrega no local";
     if (document.getElementById("teleBusca").checked) {
         transporte = "Tele-busca (Buscaremos seu pet)";
     }
 
-    // Cria uma mensagem de resumo
+    // mensagem de resumo
     const mensagem = `
     ✅ Agendamento Realizado com Sucesso!
     
@@ -57,6 +57,6 @@ function confirmarAgendamento(event) {
 
     alert(mensagem);
 
-    // Opcional: Limpar o formulário após o "envio"
+    // limpar o form dps do "envio"
     document.getElementById("formAgendamento").reset();
 }
