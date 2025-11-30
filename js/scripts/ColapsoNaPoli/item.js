@@ -1,5 +1,5 @@
 // item.js - Fase 2
-// Versão atualizada com a classe MegaCerebro (POO clara)
+// Versão atualizada com a classe MegaCerebro 
 
 export class Item {
   constructor({ id, nome, descricao = '', coletavel = false, examinavel = true } = {}) {
