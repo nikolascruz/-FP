@@ -43,13 +43,13 @@ header {
 }
 
 header h1 {
-    color: var(--primary-color);
+    color: var(--auqmia-laranja);
     font-size: 2.5rem;
 }
 
 /* Menu principal */
 nav {
-    background-color: var(--secondary-color);
+    background-color: var(--auqmia-verde);
     margin-top: 1rem;
     padding: 0.5rem;
 }
@@ -82,7 +82,7 @@ main {
 }
 
 h2 {
-    color: var(--primary-color);
+    color: var(--auqmia-verde);
     margin-bottom: 1rem;
     margin-top: 2rem;
     border-bottom: 2px solid #ddd;
@@ -134,7 +134,7 @@ p {
     border: 1px solid #eee;
     border-radius: 10px;
     padding: 15px;
-    width: 250px;
+    width: 450px;
     box-shadow: var(--card-shadow);
     transition: transform 0.2s;
     display: flex;
@@ -144,7 +144,7 @@ p {
 
 .card:hover {
     transform: translateY(-5px); /* Para subir ao passar o mouse */
-    border-color: var(--secondary-color);
+    border-color: var(--auqmia-laranja);
 }
 
 .card img {
@@ -162,13 +162,13 @@ p {
 
 .price {
     font-size: 1.2rem;
-    color: var(--primary-color);
+    color: var(--auqmia-verde);
     font-weight: bold;
     margin: 10px 0;
 }
 
 .card button {
-    background-color: var(--primary-color);
+    background-color: var(--auqmia-verde);
     color: white;
     border: none;
     padding: 8px 16px;
@@ -196,7 +196,7 @@ footer p {
 }
 
 footer a {
-    color: var(--secondary-color);
+    color: var(--auqmia-laranja);
     text-decoration: none;
 }
 
