@@ -2,47 +2,63 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <title>Serviços — AuQmia Petshop</title>
 </head>
 <body>
 
 <header>
-    <img src="aux/logo-auqmia.png" alt="Logo AuQmia" width="120">
-    <h1>Serviços</h1>
+    <div class="header-container">
+        <img src="aux/logo-auqmia.png" alt="Logo AuQmia" class="logo">
+        <h1>Nossos Serviços</h1>
+    </div>
 
     <nav>
-        <a href="index.html">Início</a> |
-        <a href="produtos.html">Produtos</a> |
-        <a href="servicos.html">Serviços</a> |
-        <a href="contato.html">Contato</a>
+        <ul>
+            <li><a href="index.html">Início</a></li>
+            <li><a href="produtos.html">Produtos</a></li>
+            <li><a href="servicos.html">Serviços</a></li>
+            <li><a href="contato.html">Contato</a></li>
+        </ul>
     </nav>
 </header>
 
-<hr>
-
 <main>
-    <h2>Banho e Tosa</h2>
-    <p>Serviço completo de banho, corte e hidratação.</p>
-    <p><strong>R$ 65,00</strong></p>
-    <p>Tele-busca: <strong>Sim</strong></p>
+    <h2>Cuidados Especiais</h2>
+    <p style="text-align: center; margin-bottom: 20px;">Agende o horário do seu melhor amigo!</p>
 
-    <hr>
+    <div class="grid-container">
+        
+        <div class="card">
+            <img src="aux/banner-inicio.jpg" alt="Banho e Tosa" style="object-fit: cover; height: 150px;"> 
+            <h3>Banho e Tosa</h3>
+            <p>Serviço completo de banho, corte higiênico e hidratação.</p>
+            <p class="price">R$ 65,00</p>
+            <p><strong>Tele-busca:</strong> <span style="color: green;">Sim</span></p>
+            <button>Agendar</button>
+        </div>
 
-    <h2>Consulta Veterinária</h2>
-    <p>Atendimento clínico com profissionais especializados.</p>
-    <p><strong>R$ 120,00</strong></p>
-    <p>Tele-busca: <strong>Não</strong></p>
+        <div class="card">
+            <img src="aux/logo-auqmia.png" alt="Veterinária" style="object-fit: contain; height: 150px; padding: 10px;">
+            <h3>Consulta Veterinária</h3>
+            <p>Atendimento clínico com profissionais especializados.</p>
+            <p class="price">R$ 120,00</p>
+            <p><strong>Tele-busca:</strong> <span style="color: red;">Não</span></p>
+            <button>Agendar</button>
+        </div>
 
-    <hr>
+        <div class="card">
+            <img src="aux/banner-inicio.jpg" alt="Transporte" style="object-fit: cover; height: 150px;">
+            <h3>Taxi Pet</h3>
+            <p>Transporte seguro, climatizado e confortável para seu pet.</p>
+            <p class="price">R$ 40,00</p>
+            <p><strong>Tele-busca:</strong> <span style="color: green;">Sim</span></p>
+            <button>Chamar</button>
+        </div>
 
-    <h2>Taxi Pet</h2>
-    <p>Transporte seguro e confortável para seu pet.</p>
-    <p><strong>R$ 40,00</strong></p>
-    <p>Tele-busca: <strong>Sim</strong></p>
+    </div>
 </main>
-
-<hr>
 
 <footer>
     <p>© 2025 AuQmia Petshop — Todos os direitos reservados.</p>

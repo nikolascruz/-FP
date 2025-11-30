@@ -2,38 +2,55 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <title>Contato — AuQmia Petshop</title>
 </head>
 <body>
 
 <header>
-    <img src="aux/logo-auqmia.png" alt="Logo AuQmia" width="120">
-    <h1>Contato</h1>
+    <div class="header-container">
+        <img src="aux/logo-auqmia.png" alt="Logo AuQmia" class="logo">
+        <h1>Fale Conosco</h1>
+    </div>
 
     <nav>
-        <a href="index.html">Início</a> |
-        <a href="produtos.html">Produtos</a> |
-        <a href="servicos.html">Serviços</a> |
-        <a href="contato.html">Contato</a>
+        <ul>
+            <li><a href="index.html">Início</a></li>
+            <li><a href="produtos.html">Produtos</a></li>
+            <li><a href="servicos.html">Serviços</a></li>
+            <li><a href="contato.html">Contato</a></li>
+        </ul>
     </nav>
 </header>
 
-<hr>
-
 <main>
-    <h2>Fale Conosco</h2>
-    <p>E-mail: contato@auqmia.com</p>
-    <p>Telefone: (51) 99999-9999</p>
-    <p>Endereço: Rua dos Pets Felizes, 123 — Pelotas/RS</p>
+    <h2>Onde nos encontrar</h2>
+    
+    <div class="grid-container" style="margin-bottom: 30px;">
+        <div class="card" style="width: 100%; max-width: 500px;">
+            <h3>Canais de Atendimento</h3>
+            <br>
+            <p><strong>📞 Telefone / WhatsApp:</strong><br> (53) 99999-9999</p>
+            <br>
+            <p><strong>📧 E-mail:</strong><br> contato@auqmia.com</p>
+            <br>
+            <p><strong>🏠 Endereço:</strong><br> Rua dos Pets Felizes, 123 — Pelotas/RS</p>
+            <br>
+            <button onclick="alert('Redirecionando para o WhatsApp...')">Chamar no Whats</button>
+        </div>
+    </div>
 
-    <img src="aux/mapa.jpeg" width="300" alt="Mapa Petshop">
+    <h3>Nossa Localização</h3>
+    <div style="text-align: center; margin-top: 20px;">
+        <img src="aux/mapa.jpeg" alt="Mapa Petshop" style="width: 100%; max-width: 600px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+    </div>
+
 </main>
-
-<hr>
 
 <footer>
     <p>© 2025 AuQmia Petshop — Todos os direitos reservados.</p>
+    <p>Pelotas - RS</p>
 </footer>
 
 </body>

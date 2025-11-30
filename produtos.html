@@ -2,68 +2,65 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <title>Produtos — AuQmia Petshop</title>
 </head>
 <body>
 
 <header>
-    <img src="aux/logo-auqmia.png" alt="Logo AuQmia" width="120">
-    <h1>Produtos</h1>   
-
+    <div class="header-container">
+        <img src="aux/logo-auqmia.png" alt="Logo AuQmia" class="logo">
+        <h1>Produtos</h1>   
+    </div>
     <nav>
-        <a href="index.html">Início</a> |
-        <a href="produtos.html">Produtos</a> |
-        <a href="servicos.html">Serviços</a> |
-        <a href="contato.html">Contato</a>
+        <ul>
+            <li><a href="index.html">Início</a></li>
+            <li><a href="produtos.html">Produtos</a></li>
+            <li><a href="servicos.html">Serviços</a></li>
+            <li><a href="contato.html">Contato</a></li>
+        </ul>
     </nav>
 </header>
 
-<hr>
-
 <main>
     <h2>Alimentação</h2>
+    <div class="grid-container">
+        <div class="card">
+            <img src="aux/Ração.jpg" alt="Ração para cães">
+            <h3>Ração Premium Cães</h3>
+            <p>Ração completa com vitaminas essenciais.</p>
+            <p class="price">R$ 89,90</p>
+            <button>Comprar</button>
+        </div>
 
-    <h3>Ração Premium Cães Adultos</h3>
-    <img src="aux/Ração.jpg" width="200" alt="Ração para cães">
-    <p>Ração completa com vitaminas essenciais e alta digestibilidade.</p>
-    <p><strong>R$ 89,90</strong></p>
-
-    <h3>Ração Gatos Castrados</h3>
-    <img src="aux/ração1.jpg" width="200" alt="Ração para gatos">
-    <p>Fórmula balanceada para saúde urinária e controle de peso.</p>
-    <p><strong>R$ 79,90</strong></p>
-
-    <hr>
+        <div class="card">
+            <img src="aux/ração1.jpg" alt="Ração para gatos">
+            <h3>Ração Gatos Castrados</h3>
+            <p>Fórmula balanceada para controle de peso.</p>
+            <p class="price">R$ 79,90</p>
+            <button>Comprar</button>
+        </div>
+    </div>
 
     <h2>Brinquedos</h2>
-
-    <h3>Corda Dental Mordedora</h3>
-    <img src="aux/Corda Dental Mordedora.jpg" width="200" alt="Corda Mordedora>
-    <p>Corda resistente para diversão durante horas.</p>
-    <p><strong>R$ 29,90</strong></p>
-
-    <h3>Varinha para Gatos</h3>
-    <img src="aux/Varinha com Penas para Gatos.jpg" width="200" alt="Brinquedo para gatos">
-    <p>Estimula o instinto natural de caça.</p>
-    <p><strong>R$ 19,90</strong></p>
-
-    <hr>
-
-    <h2>Higiene</h2>
-
-    <h3>Shampoo Neutro Pet</h3>
-    <img src="aux/Shampoo Neutro.jpg" width="200" alt="Shampoo pet">
-    <p>Fragrância suave e fórmula hipoalergênica.</p>
-    <p><strong>R$ 24,90</strong></p>
-
-    <h3>Areia Sanitária Premium</h3>
-    <img src="aux/Areia Sanitária Ultra.jpg" width="200" alt="Areia sanitária">
-    <p>Alta absorção e controle de odores.</p>
-    <p><strong>R$ 34,90</strong></p>
+    <div class="grid-container">
+        <div class="card">
+            <img src="aux/Corda Dental Mordedora.jpg" alt="Corda Mordedora">
+            <h3>Corda Mordedora</h3>
+            <p>Resistente para diversão.</p>
+            <p class="price">R$ 29,90</p>
+            <button>Comprar</button>
+        </div>
+        <div class="card">
+            <img src="aux/Varinha com Penas para Gatos.jpg" alt="Varinha Gatos">
+            <h3>Varinha para Gatos</h3>
+            <p>Estimula o instinto de caça.</p>
+            <p class="price">R$ 19,90</p>
+            <button>Comprar</button>
+        </div>
+    </div>
 </main>
-
-<hr>
 
 <footer>
     <p>© 2025 AuQmia Petshop — Todos os direitos reservados.</p>
