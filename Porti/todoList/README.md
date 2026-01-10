@@ -14,3 +14,9 @@ run: executa o servidor de desenvolvimento do FastAPI
 pre_test: executa a camada de lint antes de executar os testes
 test: executa os testes com pytest de forma verbosa (-vv) e adiciona nosso código como base de cobertura
 post_test: gera um report de cobertura após os testes
+
+
+
+Erro de porta aberta por causa do BREAKPOINT(): 
+ lsof -i :8000 # ele retorna o numero 79037 ou outro
+ kill -9 79037
