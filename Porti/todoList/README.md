@@ -20,3 +20,5 @@ post_test: gera um report de cobertura após os testes
 Erro de porta aberta por causa do BREAKPOINT(): 
  lsof -i :8000 # ele retorna o numero 79037 ou outro
  kill -9 79037
+
+ 1:26 minutos

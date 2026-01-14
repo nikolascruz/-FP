@@ -55,7 +55,6 @@ def read_users():
     '/users/{user_id}', status_code=HTTPStatus.OK, response_model=UserPublic
 )
 def update_user(user_id: int, user: UserSchema):
-
     user_with_id = UserDB(
         username=user.username,
         email=user.email,
@@ -66,7 +65,7 @@ def update_user(user_id: int, user: UserSchema):
     if user_id > len(database) or user_id < 1:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND,
-            detail='Não achei o ID meu patrão',
+            detail='User not found',
         )
 
     database[user_id - 1] = user_with_id
@@ -77,11 +76,10 @@ def update_user(user_id: int, user: UserSchema):
     '/users/{user_id}', status_code=HTTPStatus.OK, response_model=UserPublic
 )
 def delete_user(user_id: int):
-
     if user_id > len(database) or user_id < 1:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND,
-            detail='Não achei o ID meu patrão',
+            detail='User not found',
         )
     return database.pop(user_id - 1)
 
@@ -93,7 +91,7 @@ def read_user(user_id: int):
     if user_id > len(database) or user_id < 1:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND,
-            detail='Não achei o ID meu patrão',
+            detail='User not found',
         )
 
     return next((user for user in database if user.id == user_id), None)
