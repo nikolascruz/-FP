@@ -1,11 +1,13 @@
 from http import HTTPStatus
 
-from fastapi import FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
+from sqlalchemy import or_, select
+from sqlalchemy.exc import IntegrityError
 
-from todolist.schemas import UserDB, UserList, UserPublic, UserSchema
-
-database = []
+from database import get_session
+from todolist.models import User
+from todolist.schemas import UserList, UserPublic, UserSchema
 
 app = FastAPI(
     title='Minha API de To do List',
@@ -35,63 +37,107 @@ def rota_hello():
 
 
 @app.post('/users/', status_code=HTTPStatus.CREATED, response_model=UserPublic)
-def create_user(user: UserSchema):
-    user_with_id = UserDB(
-        username=user.username,
-        email=user.email,
-        password=user.password,
-        id=len(database) + 1,
+def create_user(user: UserSchema, session=Depends(get_session)):
+    db_user = session.scalar(
+        select(User).where(
+            or_(User.username == user.username, User.email == user.email)
+        )
     )
-    database.append(user_with_id)
-    return user_with_id
+
+    if db_user:
+        if db_user.username == user.username:
+            raise HTTPException(
+                status_code=HTTPStatus.CONFLICT,
+                detail='Esse Username já existe',
+            )
+        elif db_user.email == user.email:
+            raise HTTPException(
+                status_code=HTTPStatus.CONFLICT, detail='Esse Email já existe'
+            )
+
+    db_user = User(
+        username=user.username, email=user.email, password=user.password
+    )
+
+    session.add(db_user)
+
+    session.commit()
+    session.refresh(db_user)
+
+    return db_user
 
 
 @app.get('/users/', status_code=HTTPStatus.OK, response_model=UserList)
-def read_users():
-    return {'users': database}
+def read_users(
+    session=Depends(get_session),
+    skip: int = 0,
+    limit: int = 10,
+):
+    users = session.scalars(select(User).offset(skip).limit(limit)).all()
+
+    return {'users': users}
 
 
 @app.put(
     '/users/{user_id}', status_code=HTTPStatus.OK, response_model=UserPublic
 )
-def update_user(user_id: int, user: UserSchema):
-    user_with_id = UserDB(
-        username=user.username,
-        email=user.email,
-        password=user.password,
-        id=user_id,
-    )
+def update_user(user_id: int, user: UserSchema, session=Depends(get_session)):
+    user_db = session.scalar(select(User).where(User.id == user_id))
 
-    if user_id > len(database) or user_id < 1:
+    if not user_db:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND,
-            detail='User not found',
+            detail='Usuário não existente',
         )
 
-    database[user_id - 1] = user_with_id
-    return user_with_id
+    try:
+        user_db.username = user.username
+        user_db.email = user.email
+        user_db.password = user.password
+        user_db.id = user_id
+
+        session.add(user_db)
+        session.commit()
+        session.refresh(user_db)
+
+        return user_db
+
+    except IntegrityError:
+        raise HTTPException(
+            status_code=HTTPStatus.CONFLICT,
+            detail='Esse Username ou email já existe',
+        )
 
 
 @app.delete(
-    '/users/{user_id}', status_code=HTTPStatus.OK, response_model=UserPublic
-)
-def delete_user(user_id: int):
-    if user_id > len(database) or user_id < 1:
+    '/users/{user_id}',
+    status_code=HTTPStatus.OK,
+)  # response_model=Message
+def delete_user(user_id: int, session=Depends(get_session)):
+    user_db = session.scalar(select(User).where(User.id == user_id))
+
+    if not user_db:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND,
-            detail='User not found',
+            detail='Usuário não existente',
         )
-    return database.pop(user_id - 1)
+
+    session.delete(user_db)
+    session.commit()
+
+    return {'Message': 'Usúario deletado'}
 
 
 @app.get(
     '/users/{user_id}', status_code=HTTPStatus.OK, response_model=UserPublic
 )
-def read_user(user_id: int):
-    if user_id > len(database) or user_id < 1:
+def read_user(user_id: int, session=Depends(get_session)):
+    user_db = session.scalar(select(User).where(User.id == user_id))
+
+    if not user_db:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND,
-            detail='User not found',
+            detail='Usuário não existente',
         )
 
-    return next((user for user in database if user.id == user_id), None)
+    return user_db
