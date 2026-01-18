@@ -4,13 +4,6 @@ from todolist.schemas import UserPublic
 
 
 # client eestá sendo importado de conftest pelo pytest.fixture
-def test_root_deve_retornar_ok_e_ola_mundo(client):
-    response = client.get('/')
-
-    assert response.status_code == HTTPStatus.OK
-    assert response.json() == {'message': 'Hello World!'}
-
-
 def test_rota_hello(client):
     response = client.get('/hello')
 
@@ -82,22 +75,17 @@ def test_create_user_ERROR_email(client):
     assert response.json() == {'detail': 'Esse Email já existe'}
 
 
-def test_read_users(client):
-    response = client.get('/users/')
-
-    assert response.status_code == HTTPStatus.OK
-    assert response.json() == {'users': []}
-
-
-def test_read_users_with_users(client, user):
+def test_read_users(client, user, token):
     user_schema = UserPublic.model_validate(user).model_dump()
-    response = client.get('/users/')
+    response = client.get(
+        '/users/', headers={'Authorization': f'Bearer {token}'}
+    )
 
     assert response.status_code == HTTPStatus.OK
     assert response.json() == {'users': [user_schema]}
 
 
-def test_update_user(client, user):
+def test_update_user(client, user, token):
     response = client.put(
         f'/users/{user.id}',
         json={
@@ -105,6 +93,7 @@ def test_update_user(client, user):
             'email': 'bob@example.com',
             'password': 'secret',
         },
+        headers={'Authorization': f'Bearer {token}'},
     )
 
     assert response.status_code == HTTPStatus.OK
@@ -115,35 +104,27 @@ def test_update_user(client, user):
     }
 
 
-def test_delete_user(client, user):
-    response = client.delete(f'users/{user.id}')
+def test_delete_user(client, user, token):
+    response = client.delete(
+        f'users/{user.id}',
+        headers={'Authorization': f'Bearer {token}'},
+    )
 
     assert response.status_code == HTTPStatus.OK
     assert response.json() == {'Message': 'Usúario deletado'}
 
 
-def test_update_user_NOT_FOUND(client):
-    response = client.put(
-        '/users/0',
-        json={
-            'username': 'bob',
-            'email': 'bob@example.com',
-            'password': 'secret',
-        },
+def test_delete_user_FORBIDEN(client, token):
+    response = client.delete(
+        'users/0',
+        headers={'Authorization': f'Bearer {token}'},
     )
 
-    assert response.status_code == HTTPStatus.NOT_FOUND
-    assert response.json() == {'detail': 'Usuário não existente'}
+    assert response.status_code == HTTPStatus.FORBIDDEN
+    assert response.json() == {'detail': 'Você não tem permição'}
 
 
-def test_delete_user_NOT_FOUND(client):
-    response = client.delete('/users/0')
-
-    assert response.status_code == HTTPStatus.NOT_FOUND
-    assert response.json() == {'detail': 'Usuário não existente'}
-
-
-def test_update_integrity_error(client, user):
+def test_update_integrity_error(client, user, token):
     client.post(
         '/users/',
         json={
@@ -154,6 +135,7 @@ def test_update_integrity_error(client, user):
     )
     response_update = client.put(
         f'/users/{user.id}',
+        headers={'Authorization': f'Bearer {token}'},
         json={
             'username': 'bob',
             'email': 'carl@example.com',
@@ -167,8 +149,10 @@ def test_update_integrity_error(client, user):
     }
 
 
-def test_read_user(client, user):
-    response = client.get(f'users/{user.id}')
+def test_read_user(client, user, token):
+    response = client.get(
+        f'users/{user.id}', headers={'Authorization': f'Bearer {token}'}
+    )
 
     assert response.status_code == HTTPStatus.OK
     assert response.json() == {
@@ -178,8 +162,29 @@ def test_read_user(client, user):
     }
 
 
-def test_read_user_NOT_FOUND(client):
-    response = client.get('/users/0')
+def test_update_user_NOT_FOUND(client, token):
+    response = client.put(
+        '/users/0',
+        headers={'Authorization': f'Bearer {token}'},
+        json={
+            'username': 'bob',
+            'email': 'bob@example.com',
+            'password': 'secret',
+        },
+    )
 
-    assert response.status_code == HTTPStatus.NOT_FOUND
-    assert response.json() == {'detail': 'Usuário não existente'}
+    assert response.status_code == HTTPStatus.FORBIDDEN
+    assert response.json() == {'detail': 'Você não tem permição'}
+
+
+def test_get_token(client, user):
+    response = client.post(
+        '/login',
+        data={'username': user.email, 'password': user.clean_password},
+    )
+
+    token = response.json()
+
+    assert response.status_code == HTTPStatus.OK
+    assert token['token_type'] == 'Bearer'
+    assert 'access_token' in token
