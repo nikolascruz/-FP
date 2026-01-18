@@ -11,6 +11,7 @@ from database import get_session
 from todolist.app import app
 from todolist.models import User, table_registry
 from todolist.security import get_password_hash
+from todolist.settings import Settings
 
 
 @pytest.fixture
@@ -79,7 +80,12 @@ def mock_db_time():
 @pytest.fixture
 def token(client, user):
     response = client.post(
-        '/login',
+        '/auth/login',
         data={'username': user.email, 'password': user.clean_password},
     )
     return response.json()['access_token']
+
+
+@pytest.fixture
+def settings():
+    return Settings()
