@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 
-from routers import auth, users
+from todolist.routers import auth, users
 
 app = FastAPI(
     title='Minha API de To do List',

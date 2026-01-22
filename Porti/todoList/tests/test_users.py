@@ -112,9 +112,9 @@ async def test_delete_user(client, user, token):
 
 
 @pytest.mark.asyncio
-async def test_delete_user_FORBIDEN(client, token):
+async def test_delete_user_FORBIDEN(client, other_user, token):
     response = client.delete(
-        'users/0',
+        f'users/{other_user.id}',
         headers={'Authorization': f'Bearer {token}'},
     )
 
@@ -156,16 +156,16 @@ async def test_read_user(client, user, token):
 
     assert response.status_code == HTTPStatus.OK
     assert response.json() == {
-        'username': 'alice',
-        'email': 'alice@example.com',
-        'id': 1,
+        'username': user.username,
+        'email': user.email,
+        'id': user.id,
     }
 
 
 @pytest.mark.asyncio
-async def test_update_user_NOT_FOUND(client, token):
+async def test_update_user_FORBIDEN(client, other_user, token):
     response = client.put(
-        '/users/0',
+        f'/users/{other_user.id}',
         headers={'Authorization': f'Bearer {token}'},
         json={
             'username': 'bob',

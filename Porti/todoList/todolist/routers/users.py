@@ -6,7 +6,7 @@ from sqlalchemy import or_, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from database import get_session
+from todolist.database import get_session
 from todolist.models import User
 from todolist.schemas import (
     FilterPage,
