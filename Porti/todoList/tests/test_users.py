@@ -1,5 +1,7 @@
 from http import HTTPStatus
 
+import pytest
+
 from todolist.schemas import UserPublic
 
 
@@ -67,7 +69,8 @@ def test_create_user_ERROR_email(client):
     assert response.json() == {'detail': 'Esse Email já existe'}
 
 
-def test_read_users(client, user, token):
+@pytest.mark.asyncio
+async def test_read_users(client, user, token):
     user_schema = UserPublic.model_validate(user).model_dump()
     response = client.get(
         '/users/', headers={'Authorization': f'Bearer {token}'}
@@ -77,7 +80,8 @@ def test_read_users(client, user, token):
     assert response.json() == {'users': [user_schema]}
 
 
-def test_update_user(client, user, token):
+@pytest.mark.asyncio
+async def test_update_user(client, user, token):
     response = client.put(
         f'/users/{user.id}',
         json={
@@ -96,7 +100,8 @@ def test_update_user(client, user, token):
     }
 
 
-def test_delete_user(client, user, token):
+@pytest.mark.asyncio
+async def test_delete_user(client, user, token):
     response = client.delete(
         f'users/{user.id}',
         headers={'Authorization': f'Bearer {token}'},
@@ -106,7 +111,8 @@ def test_delete_user(client, user, token):
     assert response.json() == {'Message': 'Usúario deletado'}
 
 
-def test_delete_user_FORBIDEN(client, token):
+@pytest.mark.asyncio
+async def test_delete_user_FORBIDEN(client, token):
     response = client.delete(
         'users/0',
         headers={'Authorization': f'Bearer {token}'},
@@ -116,7 +122,8 @@ def test_delete_user_FORBIDEN(client, token):
     assert response.json() == {'detail': 'Você não tem permição'}
 
 
-def test_update_integrity_error(client, user, token):
+@pytest.mark.asyncio
+async def test_update_integrity_error(client, user, token):
     client.post(
         '/users/',
         json={
@@ -141,7 +148,8 @@ def test_update_integrity_error(client, user, token):
     }
 
 
-def test_read_user(client, user, token):
+@pytest.mark.asyncio
+async def test_read_user(client, user, token):
     response = client.get(
         f'users/{user.id}', headers={'Authorization': f'Bearer {token}'}
     )
@@ -154,7 +162,8 @@ def test_read_user(client, user, token):
     }
 
 
-def test_update_user_NOT_FOUND(client, token):
+@pytest.mark.asyncio
+async def test_update_user_NOT_FOUND(client, token):
     response = client.put(
         '/users/0',
         headers={'Authorization': f'Bearer {token}'},

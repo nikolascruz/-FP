@@ -4,7 +4,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import or_, select
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from database import get_session
 from todolist.models import User
@@ -20,14 +20,14 @@ from todolist.security import (
 )
 
 router = APIRouter(prefix='/users', tags=['users'])
-Session = Annotated[Session, Depends(get_session)]
+Session = Annotated[AsyncSession, Depends(get_session)]
 CurrentUser = Annotated[User, Depends(get_current_user)]
 FilterUsers = Annotated[FilterPage, Query()]
 
 
 @router.post('/', status_code=HTTPStatus.CREATED, response_model=UserPublic)
-def create_user(user: UserSchema, session: Session):
-    db_user = session.scalar(
+async def create_user(user: UserSchema, session: Session):
+    db_user = await session.scalar(
         select(User).where(
             or_(User.username == user.username, User.email == user.email)
         )
@@ -52,38 +52,39 @@ def create_user(user: UserSchema, session: Session):
 
     session.add(db_user)
 
-    session.commit()
-    session.refresh(db_user)
+    await session.commit()
+    await session.refresh(db_user)
 
     return db_user
 
 
 @router.get('/', status_code=HTTPStatus.OK, response_model=UserList)
-def list_users(
+async def list_users(
     session: Session,
     current_user: CurrentUser,
     filter_users: FilterUsers,
 ):
-    users = session.scalars(
+    result = await session.scalars(
         select(User).offset(filter_users.skip).limit(filter_users.limit)
-    ).all()
+    )
+    users = result.all()
 
     return {'users': users}
 
 
 @router.get('/{user_id}', status_code=HTTPStatus.OK, response_model=UserPublic)
-def read_user(
+async def read_user(
     user_id: int,
     session: Session,
     current_user: CurrentUser,
 ):
-    user_db = session.scalar(select(User).where(User.id == user_id))
+    user_db = await session.scalar(select(User).where(User.id == user_id))
 
     return user_db
 
 
 @router.put('/{user_id}', status_code=HTTPStatus.OK, response_model=UserPublic)
-def update_user(
+async def update_user(
     user_id: int,
     user: UserSchema,
     session: Session,
@@ -101,8 +102,8 @@ def update_user(
         current_user.id = user_id
 
         session.add(current_user)
-        session.commit()
-        session.refresh(current_user)
+        await session.commit()
+        await session.refresh(current_user)
 
         return current_user
 
@@ -117,7 +118,7 @@ def update_user(
     '/{user_id}',
     status_code=HTTPStatus.OK,
 )  # response_model=Message
-def delete_user(
+async def delete_user(
     user_id: int,
     session: Session,
     current_user: CurrentUser,
@@ -128,7 +129,7 @@ def delete_user(
             detail='Você não tem permição',
         )
 
-    session.delete(current_user)
-    session.commit()
+    await session.delete(current_user)
+    await session.commit()
 
     return {'Message': 'Usúario deletado'}
