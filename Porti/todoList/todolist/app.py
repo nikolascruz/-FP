@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 
-from todolist.routers import auth, users
+from todolist.routers import auth, todos, users
 
 app = FastAPI(
     title='Minha API de To do List',
@@ -12,6 +12,7 @@ app = FastAPI(
 
 app.include_router(users.router)
 app.include_router(auth.router)
+app.include_router(todos.router)
 
 
 @app.get('/', response_class=HTMLResponse)
