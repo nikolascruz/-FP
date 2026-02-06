@@ -2,7 +2,8 @@ from http import HTTPStatus
 
 import factory.fuzzy
 import pytest
-from sqlalchemy import select
+from sqlalchemy.exc import DataError
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from todolist.models import Todo, TodoState, User
 
@@ -228,19 +229,19 @@ async def test_list_todos_should_return_all_expected_fields__exercicio(
 
 
 @pytest.mark.asyncio
-async def test_create_todo_error(session, user: User):
+async def test_create_todo_error(session: AsyncSession, user: User):
     todo = Todo(
         title='Test Todo',
         description='Test Desc',
-        state='test',
+        state='test',  # Valor inválido para o ENUM
         user_id=user.id,
     )
 
     session.add(todo)
-    await session.commit()
 
-    with pytest.raises(LookupError):
-        await session.scalar(select(Todo))
+    # No Postgres, o erro estoura aqui, pois ele valida o ENUM no INSERT
+    with pytest.raises(DataError):
+        await session.commit()
 
 
 def test_list_todos_filter_min_length_exercicio_06(client, token):

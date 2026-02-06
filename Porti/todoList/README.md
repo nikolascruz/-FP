@@ -21,3 +21,16 @@ Erro de porta aberta por causa do BREAKPOINT():
  lsof -i :8000 # ele retorna o numero 79037 ou outro
  kill -9 79037
 
+docker run -d \
+    --name app_database \
+    -e POSTGRES_USER=app_user \
+    -e POSTGRES_DB=app_db \
+    -e POSTGRES_PASSWORD=app_password \
+    -p 5432:5432 \
+    postgres
+
+
+Error response from daemon: failed to create task for container: failed to create shim task: OCI runtime create failed: runc create failed: unable to start container process: exec: "./entrypoint.sh": permission denied: unknown
+
+chmod +
+x entrypoint.sh
