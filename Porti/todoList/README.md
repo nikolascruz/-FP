@@ -34,3 +34,5 @@ Error response from daemon: failed to create task for container: failed to creat
 
 chmod +
 x entrypoint.sh
+
+docker-compose up
