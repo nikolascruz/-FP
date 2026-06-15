@@ -1,0 +1,30 @@
+import { useState, useEffect } from "react";
+
+function usePostcards() {
+    const [postcards, setPostcards] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        async function fetchPostcards() {
+            try {
+                const response = await fetch("http://localhost:3000/postcards");
+                if (!response.ok) {
+                    throw new Error("Erro ao buscar cartões postais");
+                }
+                const data = await response.json();
+                setPostcards(data);
+                setLoading(false);
+            } catch (error) {
+                setError(error);
+                setLoading(false);
+            }
+        }
+
+        fetchPostcards();
+    }, []);
+
+    return { postcards, loading, error };
+}
+
+export default usePostcards;
