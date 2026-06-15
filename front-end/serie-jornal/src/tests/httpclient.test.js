@@ -2,8 +2,8 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 import axios from 'axios';
-import App from '../src/App';
-import Home from '../src/pages/Home';
+import App from '../App';
+import Home from '../pages/Home';
 
 // Diz ao Jest para interceptar as chamadas do axios neste arquivo
 jest.mock('axios');

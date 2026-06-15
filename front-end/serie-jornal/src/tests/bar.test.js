@@ -1,8 +1,8 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
-import NavBar from '../src/componentes/Bar/NavBar';
-import FootBar from '../src/componentes/Bar/FootBar';
+import NavBar from '../componentes/Bar/NavBar';
+import FootBar from '../componentes/Bar/FootBar';
 
 describe('Testes de Componentes Bar (NavBar, FootBar)', () => {
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import SerieForm from '../src/componentes/SerieForm';
-import SerieList from '../src/componentes/SerieList';
+import SerieForm from '../componentes/SerieForm';
+import SerieList from '../componentes/SerieList';
 
 describe('Testes de Componentes Genéricos CRUD', () => {
 
